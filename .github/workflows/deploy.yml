@@ -77,7 +77,7 @@ jobs:
 
       - name: Build elm-pages site
         working-directory: engine
-        run: npx elm-pages build
+        run: make build
         env:
           # ../content is relative to the engine working directory
           CONTENT_DIR: ../content
