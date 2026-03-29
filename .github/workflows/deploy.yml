@@ -81,6 +81,7 @@ jobs:
         env:
           # ../content is relative to the engine working directory
           CONTENT_DIR: ../content
+          ELM_PAGES: npx elm-pages
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
