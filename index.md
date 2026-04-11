@@ -5,6 +5,4 @@ slug: index
 published: true
 ---
 
-# Oppaat
-
-* [Tapahtumakalenterin tulostaminen](kalenteri)
+<toc />

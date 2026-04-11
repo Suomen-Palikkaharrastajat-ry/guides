@@ -3,7 +3,7 @@ title: "Palikkakalenteri"
 description: ""
 slug: kalenteri
 published: true
-nav: true
+nav: false
 ---
 
 # Palikkakalenteri
