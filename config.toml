@@ -78,7 +78,7 @@ site_label  = "Palikkaharrastajat"
 copyright   = "© 2026 Suomen Palikkaharrastajat ry"
 disclaimer  = [
     "LEGO® on LEGO Groupin rekisteröity tavaramerkki.",
-    "LEGO Group ei ole valtuuttanut tai tukenut tätä sivustoa."
+    "LEGO Group ei ylläpidä tai tue tätä itsenäistä sivustoa."
 ]
 links = [
     { label = "Jäsenfoorumi", href = "https://forum.palikkaharrastajat.fi" },
