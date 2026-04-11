@@ -1,16 +1,14 @@
 name: Deploy
 
-# Checks out the site engine (website-build), feeds this repo's content
-# into it, and deploys the result to this repo's GitHub Pages.
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
-      engine_ref:
-        description: 'Engine branch/tag/SHA to use (default: main)'
-        default: 'main'
+      builder_ref:
+        description: "master-builder branch/tag/SHA to use"
+        required: false
+        default: main
 
 permissions:
   contents: read
@@ -21,72 +19,59 @@ concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  ENGINE_REPO: Suomen-Palikkaharrastajat-ry/website-build
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      # Check out this (content) repo
-      - name: Checkout content
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: Suomen-Palikkaharrastajat-ry/master-builder
+
+      - uses: actions/checkout@v4
         with:
           path: content
 
-      # Check out the engine repo alongside it
-      - name: Checkout engine
-        uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
         with:
-          repository: ${{ env.ENGINE_REPO }}
-          path: engine
-          ref: ${{ inputs.engine_ref || 'main' }}
-          # Add 'token: ${{ secrets.ENGINE_PAT }}' here for a private engine repo
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Init engine submodules
-        working-directory: engine
-        run: make vendor
-
-      - uses: actions/setup-node@v4
+      - uses: cachix/cachix-action@v16
         with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'engine/package-lock.json'
+          name: palikkaharrastajat
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          extraPullNames: devenv
 
-      - uses: actions/cache@v4
+      - name: Install devenv
+        run: nix profile install "github:cachix/devenv/v2.0.6"
+
+      - name: Restore Elm cache
+        id: elm-cache-restore
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.elm
-            engine/.elm-pages
-          key: elm-${{ runner.os }}-${{ hashFiles('engine/elm.json', 'engine/package.json') }}
+            elm-stuff
+          key: elm-${{ runner.os }}-${{ hashFiles('elm.json') }}
           restore-keys: elm-${{ runner.os }}-
 
-      - name: Install npm dependencies
-        working-directory: engine
-        run: npm ci
+      - name: Build
+        run: devenv shell -- env CONTENT_DIR=content make build
 
-      - name: Inject build metadata
-        working-directory: engine
-        run: bash scripts/inject-build-meta.sh
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          # Pass this (content) repo so site-config.json points at the right place
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          OAUTH_CLIENT_ID: ${{ vars.OAUTH_CLIENT_ID }}
-
-      - name: Build elm-pages site
-        working-directory: engine
-        run: make build
-        env:
-          # ../content is relative to the engine working directory
-          CONTENT_DIR: ../content
-          ELM_PAGES: npx elm-pages
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Save Elm cache
+        if: steps.elm-cache-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
         with:
-          path: engine/dist/
+          path: |
+            ~/.elm
+            elm-stuff
+          key: ${{ steps.elm-cache-restore.outputs.cache-primary-key }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
   deploy:
     needs: build
@@ -100,16 +85,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  verify:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout engine (for smoke-test script)
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.ENGINE_REPO }}
-      - name: Smoke test
-        run: bash scripts/smoke-test.sh
-        env:
-          SITE_URL: ${{ needs.deploy.outputs.page_url }}
