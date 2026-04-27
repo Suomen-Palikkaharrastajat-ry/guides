@@ -1,7 +1,6 @@
 ---
 title: "Keskustelualue"
 description: "Ohjeet Suomen Palikkaharrastajat ry:n keskusteluelueelle"
-slug: keskustelualue
 published: true
 nav: false
 ---
