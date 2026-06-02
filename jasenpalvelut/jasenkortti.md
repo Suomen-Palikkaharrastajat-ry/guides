@@ -11,7 +11,9 @@ Suomen Palikkaharrastajat ry:n sähköinen jäsenkortti löytyy osoitteesta: [ht
 
 Jäsenkortista voit tarkistaa liittymispäiväsi, viimeisimmän jäsenmaksupäiväsi.
 
-> Yhdistyksen sääntöjen mukaan yhdistyksen kokouksissa on äänioikeus jäsenellä, joka on täyttänyt 15 vuotta ja maksanut kuluvan jäsenkauden jäsenmaksun viimeistään ennen kokouksen alkua. Lisäksi jäsen katsotaan eronneeksi, jos hän ei ole kalenterivuoden loppuun mennessä maksanut vuodelle määrättyä jäsenmaksua.
+Yhdistyksen sääntöjen mukaan yhdistyksen kokouksissa on äänioikeus jäsenellä, joka on täyttänyt 15 vuotta ja maksanut kuluvan jäsenkauden jäsenmaksun viimeistään ennen kokouksen alkua.
+
+Lisäksi jäsen katsotaan eronneeksi, jos hän ei ole kalenterivuoden loppuun mennessä maksanut vuodelle määrättyä jäsenmaksua.
 
 ## Kirjautuminen
 
