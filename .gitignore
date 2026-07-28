@@ -1,0 +1,12 @@
+# --- Editor & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# --- Misc / local ---
+.claude/
+TODO*
+reference/
