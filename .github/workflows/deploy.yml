@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       builder_ref:
-        description: "master-builder branch/tag/SHA to use"
+        description: "master-builder branch/tag/SHA to build with"
         required: false
         default: main
 
@@ -20,68 +20,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: Suomen-Palikkaharrastajat-ry/master-builder
-
-      - uses: actions/checkout@v4
-        with:
-          path: content
-
-      - uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: cachix/cachix-action@v16
-        with:
-          name: palikkaharrastajat
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-          extraPullNames: devenv
-
-      - name: Install devenv
-        run: nix profile install "github:cachix/devenv/v2.0.6"
-
-      - name: Restore Elm cache
-        id: elm-cache-restore
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ~/.elm
-            elm-stuff
-          key: elm-${{ runner.os }}-${{ hashFiles('elm.json') }}
-          restore-keys: elm-${{ runner.os }}-
-
-      - name: Build
-        run: devenv shell -- env CONTENT_DIR=content make build
-
-      - name: Save Elm cache
-        if: steps.elm-cache-restore.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/.elm
-            elm-stuff
-          key: ${{ steps.elm-cache-restore.outputs.cache-primary-key }}
-
-      - uses: actions/configure-pages@v5
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    uses: Suomen-Palikkaharrastajat-ry/master-builder/.github/workflows/deploy-content.yml@main
+    with:
+      builder_ref: ${{ inputs.builder_ref || 'main' }}
+    secrets: inherit
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
