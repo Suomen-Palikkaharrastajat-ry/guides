@@ -75,7 +75,7 @@ variant = "compact"
 logo        = "/logo/square/svg/square-smile-full-dark-bold.svg"
 # Label rendered above the footer link list (typically the organisation name).
 site_label  = "Palikkaharrastajat"
-copyright   = "© 2026 Suomen Palikkaharrastajat ry"
+# Copyright: the family default, which follows the build year.
 disclaimer  = [
     "LEGO® on LEGO Groupin rekisteröity tavaramerkki.",
     "LEGO Group ei ylläpidä tai tue tätä itsenäistä sivustoa."
