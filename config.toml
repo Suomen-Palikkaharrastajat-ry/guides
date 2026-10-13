@@ -80,11 +80,5 @@ disclaimer  = [
     "LEGO® on LEGO Groupin rekisteröity tavaramerkki.",
     "LEGO Group ei ylläpidä tai tue tätä itsenäistä sivustoa."
 ]
-links = [
-    { label = "Jäsenfoorumi", href = "https://forum.palikkaharrastajat.fi" },
-    { label = "Kotisivut", href = "https://palikkaharrastajat.fi" },
-    { label = "Jäsenkortti", href = "https://kortti.palikkaharrastajat.fi" },
-    { label = "Palikkakalenteri", href = "https://kalenteri.palikkaharrastajat.fi" },
-    { label = "Jäsenmaksu", href = "https://maksut.palikkaharrastajat.fi" },
-    { label = "Palikkalinkit", href = "https://linkit.palikkaharrastajat.fi" },
-]
+# Links: the family's canonical list (master-builder's family.toml), without
+# the link to this site. Add `links = [...]` here only to deviate from it.
